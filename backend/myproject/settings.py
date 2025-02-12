@@ -31,7 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'corsheaders',
+    # 'corsheaders',
     # 預設的 Django apps...
     'django.contrib.admin',
     'django.contrib.auth',
@@ -45,8 +45,6 @@ INSTALLED_APPS = [
 
     # 自訂應用
     'services',
-    'consultants',
-    'feedback',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = False

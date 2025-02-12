@@ -21,10 +21,10 @@
     </section>
 
     <!-- 系統推薦區 -->
-    <section class="recommendations">
+    <!-- <section class="recommendations">
       <h2>系統推薦</h2>
       <p>根據最新的需求分析，我們推薦您體驗療癒與服務項目。</p>
-    </section>
+    </section> -->
 
     <!-- 諮詢師介紹預覽 -->
     <section class="consultants">

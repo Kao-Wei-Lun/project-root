@@ -19,4 +19,7 @@ export default {
 
 <style>
 /* 全域樣式設定 */
+.main-content {
+  margin-top: 80px; /* 根據 nav 高度調整 */
+}
 </style>

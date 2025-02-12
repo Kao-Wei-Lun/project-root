@@ -25,3 +25,19 @@ class Service(models.Model):
 
     def __str__(self):
         return self.name
+
+class Consultant(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    image = models.ImageField(upload_to='consultants/', null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+class Feedback(models.Model):
+    user = models.CharField(max_length=100)
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.user} - {self.created_at.strftime("%Y-%m-%d")}'
