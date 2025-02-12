@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     # 預設的 Django apps...
     'django.contrib.admin',
     'django.contrib.auth',
@@ -48,8 +49,15 @@ INSTALLED_APPS = [
     'feedback',
 ]
 
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+    'http://127.0.0.1:8000',
+]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # 必須放在最前面
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
