@@ -14,7 +14,8 @@
           <img :src="service.image" :alt="service.name" />
           <h3>{{ service.name }}</h3>
           <p>{{ service.description }}</p>
-          <router-link :to="`/service/${service.id}`">了解更多</router-link>
+          <!-- 根據 service.id 從 mapping 中取出對應的路由 -->
+          <router-link :to="serviceRoutes[service.id]">了解更多</router-link>
         </div>
       </div>
     </section>
@@ -23,7 +24,6 @@
     <section class="recommendations">
       <h2>系統推薦</h2>
       <p>根據最新的需求分析，我們推薦您體驗療癒與服務項目。</p>
-      <!-- 此區域可進一步加入推薦服務的細節 -->
     </section>
 
     <!-- 諮詢師介紹預覽 -->
@@ -47,7 +47,7 @@ export default {
   name: 'Home',
   data() {
     return {
-      // 這裡暫時以靜態資料展示服務項目，日後可改為透過 API 取得
+      // 服務項目的靜態資料（日後可改為從 API 取得）
       services: [
         {
           id: 'digital',
@@ -73,7 +73,14 @@ export default {
           description: '魔法蠟燭、魔法噴霧',
           image: '/assets/test.png'
         }
-      ]
+      ],
+      // 將服務 id 與獨立路由做對應
+      serviceRoutes: {
+        digital: '/service/digital',
+        healing: '/service/healing',
+        divination: '/service/divination',
+        product: '/service/product'
+      }
     }
   }
 }

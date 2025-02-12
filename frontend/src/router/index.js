@@ -1,7 +1,9 @@
-// src/router/index.js
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
-import ServiceDetail from '../views/ServiceDetail.vue'
+import DigitalService from '../views/DigitalService.vue'
+import HealingService from '../views/HealingService.vue'
+import DivinationService from '../views/DivinationService.vue'
+import ProductService from '../views/ProductService.vue'
 import Consultant from '../views/Consultant.vue'
 import Feedback from '../views/Feedback.vue'
 
@@ -12,9 +14,24 @@ const routes = [
     component: Home
   },
   {
-    path: '/service/:id',
-    name: 'ServiceDetail',
-    component: ServiceDetail
+    path: '/service/digital',
+    name: 'DigitalService',
+    component: DigitalService
+  },
+  {
+    path: '/service/healing',
+    name: 'HealingService',
+    component: HealingService
+  },
+  {
+    path: '/service/divination',
+    name: 'DivinationService',
+    component: DivinationService
+  },
+  {
+    path: '/service/product',
+    name: 'ProductService',
+    component: ProductService
   },
   {
     path: '/consultant',
@@ -29,7 +46,7 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(), // 根據需求，可調整 BASE_URL 設定
+  history: createWebHistory(),
   routes
 })
 

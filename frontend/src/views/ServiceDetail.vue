@@ -1,14 +1,15 @@
 <template>
   <div class="service-detail">
     <h1>{{ serviceData.name }}</h1>
-    <img v-if="serviceData.image" :src="serviceData.image" :alt="serviceData.name" />
+    <!-- 將圖片 src 改為使用 computed 的 imageURL -->
+    <img v-if="serviceData.image" :src="imageURL" :alt="serviceData.name" />
     <p>{{ serviceData.description }}</p>
     <p v-if="serviceData.price">價格：{{ serviceData.price }}</p>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
 import { useRoute } from 'vue-router'
 
@@ -40,10 +41,20 @@ const fetchServiceDetail = async () => {
   }
 }
 
-
 // 元件掛載時發送請求
 onMounted(async () => {
   await fetchServiceDetail()
+})
+
+// 建立 computed 屬性 imageURL：如果 API 回傳的 image 為相對路徑則加上 API base URL
+const imageURL = computed(() => {
+  if (serviceData.value.image) {
+    // 如果圖片路徑已包含 "http"，則直接回傳；否則拼接 API base URL 與圖片路徑
+    return serviceData.value.image.startsWith('http')
+      ? serviceData.value.image
+      : `${API}${serviceData.value.image}`
+  }
+  return ''
 })
 </script>
 
