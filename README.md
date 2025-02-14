@@ -7,7 +7,7 @@ env\Scripts\activate
 python manage.py runserver
 
 username alan
-pass@Kaoweilun1013@
+pass @Kaoweilun1013@
 
 建立資料庫遷移檔並同步資料庫：
 python manage.py makemigrations
@@ -19,5 +19,11 @@ npm init vite@latest frontend -- --template vue
 cd frontend
 npm install
 
+npm run dev
+
+Failed to resolve import "vue-router" from "src/router/index.js". Does the file exist?
+npm install vue-router@4
+
+npm install marked
 
 npm init vite@latest admin -- --template vue

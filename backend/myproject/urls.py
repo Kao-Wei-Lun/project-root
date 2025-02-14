@@ -18,9 +18,14 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # 後台管理登入 API，使用 TokenObtainPairView 處理登入請求
+    path('api/admin/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    # 選用：刷新 token 的 API
+    path('api/admin/login/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('services/', include('services.urls')),
     # 如果您將來有其他應用的路由，可在這裡加入
 ]
