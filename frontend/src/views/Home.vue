@@ -1,10 +1,10 @@
 <template>
   <div class="home">
     <!-- 首頁主視覺區 (Hero Section) -->
-    <section class="hero">
+    <!-- <section class="hero">
       <h1>歡迎來到 XX 工作室</h1>
       <p>我們專注於數字易經、療癒占卜及神秘商品，幫助您找到心靈的平衡與生活的智慧。</p>
-    </section>
+    </section> -->
 
     <!-- 服務項目預覽區 -->
     <section class="services">
