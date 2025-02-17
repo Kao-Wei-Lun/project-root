@@ -13,6 +13,8 @@ pass @Kaoweilun1013@
 python manage.py makemigrations
 python manage.py migrate
 
+建立管理員資訊
+python manage.py createsuperuser
 
 # 使用 Vite 建立 Vue3 專案範例
 npm init vite@latest frontend -- --template vue

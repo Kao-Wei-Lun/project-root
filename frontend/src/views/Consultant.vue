@@ -33,8 +33,8 @@ const loading = ref(true)
 const fetchConsultants = async () => {
   try {
     const response = await axios.get(`${API}${endpoint}`)
-    console.log('諮詢師 API 回傳資料:', response.data)
-    consultants.value = response.data
+    // 根據管理後台設定的順序欄位排序（例如 order），確保前台顯示順序與後台一致
+    consultants.value = response.data.sort((a, b) => a.order - b.order)
   } catch (error) {
     console.error('取得資料失敗:', error)
   } finally {
@@ -44,7 +44,7 @@ const fetchConsultants = async () => {
 
 fetchConsultants()
 
-// 輔助函式：根據圖片路徑組合完整 URL
+// 輔助函式：組合完整圖片 URL
 const completeImageUrl = (imgPath) => {
   if (!imgPath) return ''
   return imgPath.startsWith('http') ? imgPath : `${API}${imgPath}`
