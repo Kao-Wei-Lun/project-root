@@ -16,6 +16,7 @@ class ConsultantSerializer(serializers.ModelSerializer):
             'description': {'required': False},
             # order 欄位也可設定 required=False，方便部分更新
             'order': {'required': False},
+            'service_items': {'required': False},
         }
 
 class FeedbackSerializer(serializers.ModelSerializer):

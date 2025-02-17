@@ -1,5 +1,5 @@
 from rest_framework import viewsets
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 from .models import Service, Consultant, Feedback
 from .serializers import ServiceSerializer, ConsultantSerializer, FeedbackSerializer
 
@@ -14,12 +14,20 @@ class ConsultantViewSet(viewsets.ModelViewSet):
     """
     queryset = Consultant.objects.all()
     serializer_class = ConsultantSerializer
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (JSONParser,MultiPartParser, FormParser)
     
     # 如果希望所有更新都視為部分更新，可以覆寫 update() 方法：
     def update(self, request, *args, **kwargs):
         kwargs['partial'] = True  # 強制部分更新
         return super().update(request, *args, **kwargs)
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        service = self.request.query_params.get('service')
+        if service:
+            # 篩選 service_items 包含指定服務的記錄（簡單範例，不夠精確）
+            queryset = queryset.filter(service_items__icontains=service)
+        return queryset
     
 class FeedbackViewSet(viewsets.ModelViewSet):
     """

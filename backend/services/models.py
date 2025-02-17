@@ -31,6 +31,10 @@ class Consultant(models.Model):
     description = models.TextField()
     image = models.ImageField(upload_to='consultants/', null=True, blank=True)
     order = models.PositiveIntegerField(default=1)
+    # 新增詳細介紹欄位
+    detailed_introduction = models.TextField(blank=True, default='')
+    # 新增服務項目欄位：以逗號分隔的字串，例如 "數字易經諮詢,療癒與服務"
+    service_items = models.CharField(max_length=255, blank=True, default='')
 
     def __str__(self):
         return self.name

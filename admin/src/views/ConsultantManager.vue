@@ -12,12 +12,10 @@
         v-for="(consultant, index) in consultants"
         :key="consultant.id ? consultant.id : 'new-' + index"
       >
-        <!-- 顯示流水號與目前順序 -->
         <div class="card-header">
           <span class="serial">{{ index + 1 }}</span>
           <span class="order">順序：{{ consultant.order }}</span>
         </div>
-        <!-- 編輯區 -->
         <div class="card-body">
           <label>姓名:
             <input v-model="consultant.name" placeholder="請輸入姓名" />
@@ -25,6 +23,23 @@
           <label>描述:
             <input v-model="consultant.description" placeholder="請輸入描述" />
           </label>
+          <label>詳細介紹:
+            <textarea v-model="consultant.detailed_introduction" placeholder="請輸入詳細介紹"></textarea>
+          </label>
+          <!-- 修改服務項目，改成勾選方式 -->
+          <div class="service-checkboxes">
+            <p>服務項目:</p>
+            <div v-for="option in serviceOptions" :key="option" class="checkbox-item">
+              <label>
+                <input
+                  type="checkbox"
+                  :value="option"
+                  v-model="consultant.service_items_array"
+                />
+                {{ option }}
+              </label>
+            </div>
+          </div>
           <div class="image-section">
             <img
               v-if="consultant.image"
@@ -35,7 +50,6 @@
             <input type="file" @change="handleFileChange($event, consultant)" />
           </div>
         </div>
-        <!-- 操作按鈕 -->
         <div class="card-actions">
           <button @click="moveUp(index)" :disabled="index === 0">上移</button>
           <button @click="moveDown(index)" :disabled="index === consultants.length - 1">下移</button>
@@ -55,15 +69,23 @@ import axios from 'axios'
 const API = 'http://127.0.0.1:8000'
 const endpoint = '/services/api/consultants/'
 
-// 響應式變數
+// 預設服務選項
+const serviceOptions = ['數字易經諮詢', '療癒與服務', '牌卡占卜', '商品販售']
+
 const loading = ref(true)
 const consultants = ref([])
 
-// 取得諮詢師資料並依 order 排序
+// 取得諮詢師資料，並初始化 service_items_array
 const fetchConsultants = async () => {
   try {
     const response = await axios.get(`${API}${endpoint}`)
     consultants.value = response.data.sort((a, b) => a.order - b.order)
+    // 將每筆資料的 service_items（逗號分隔字串）轉換成陣列，存入 service_items_array
+    consultants.value.forEach((consultant) => {
+      consultant.service_items_array = consultant.service_items
+        ? consultant.service_items.split(',').map(s => s.trim())
+        : []
+    })
   } catch (error) {
     console.error('取得資料失敗:', error)
   } finally {
@@ -78,7 +100,6 @@ const completeImageUrl = (imgPath) => {
   return imgPath.startsWith('http') ? imgPath : `${API}${imgPath}`
 }
 
-// 當使用者選擇新圖片時，將檔案存入 consultant.newImage
 const handleFileChange = (event, consultant) => {
   const file = event.target.files[0]
   if (file) {
@@ -86,13 +107,17 @@ const handleFileChange = (event, consultant) => {
   }
 }
 
-// 儲存單筆資料：若 consultant.id 存在則更新，否則新增
 const saveConsultant = async (consultant) => {
   try {
+    // 將 service_items_array 轉換成逗號分隔字串，存入 service_items 欄位
+    consultant.service_items = consultant.service_items_array.join(', ')
+    
     if (consultant.newImage) {
       const formData = new FormData()
       formData.append('name', consultant.name)
       formData.append('description', consultant.description)
+      formData.append('detailed_introduction', consultant.detailed_introduction)
+      formData.append('service_items', consultant.service_items)
       formData.append('order', consultant.order)
       formData.append('image', consultant.newImage)
       
@@ -125,13 +150,11 @@ const saveConsultant = async (consultant) => {
   }
 }
 
-// 刪除人員資料
 const deleteConsultant = async (consultant, index) => {
   if (!confirm('確定要刪除這筆資料嗎？')) return
   try {
     await axios.delete(`${API}${endpoint}${consultant.id}/`)
     consultants.value.splice(index, 1)
-    // 刪除後重新更新順序
     await updateOrder()
     alert('刪除成功')
   } catch (error) {
@@ -140,20 +163,17 @@ const deleteConsultant = async (consultant, index) => {
   }
 }
 
-// 重新計算所有記錄的 order 值
 const recalcOrder = () => {
   consultants.value.forEach((consultant, idx) => {
     consultant.order = idx + 1
   })
 }
 
-// 更新順序：改用 PATCH 方法批次更新僅 order 欄位
 const updateOrder = async () => {
   recalcOrder()
   try {
     const updatePromises = consultants.value.map((consultant) => {
       if (consultant.id) {
-        // 只更新 order 欄位，使用 PATCH 方法進行部分更新
         return axios.patch(`${API}${endpoint}${consultant.id}/`, { order: consultant.order })
       } else {
         return Promise.resolve()
@@ -167,7 +187,6 @@ const updateOrder = async () => {
   }
 }
 
-// 順序調整：上移
 const moveUp = (index) => {
   if (index === 0) return
   const temp = consultants.value[index]
@@ -176,7 +195,6 @@ const moveUp = (index) => {
   updateOrder()
 }
 
-// 順序調整：下移
 const moveDown = (index) => {
   if (index === consultants.value.length - 1) return
   const temp = consultants.value[index]
@@ -185,13 +203,15 @@ const moveDown = (index) => {
   updateOrder()
 }
 
-// 新增人員：新增一筆空白記錄，初始 order 為目前陣列長度 + 1
 const addConsultant = () => {
   const newOrder = consultants.value.length ? consultants.value[consultants.value.length - 1].order + 1 : 1
   consultants.value.push({
     id: null,
     name: '',
     description: '',
+    detailed_introduction: '',
+    service_items: '',
+    service_items_array: [], // 新增服務項目陣列
     image: '',
     order: newOrder,
     newImage: null
@@ -242,10 +262,30 @@ const addConsultant = () => {
   margin-bottom: 8px;
 }
 
-.card-body input[type="text"] {
+.card-body input[type="text"],
+.card-body textarea {
   width: 100%;
   padding: 5px;
   box-sizing: border-box;
+}
+
+.card-body textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.service-checkboxes {
+  margin-bottom: 8px;
+}
+
+.service-checkboxes p {
+  margin-bottom: 4px;
+  font-weight: bold;
+}
+
+.checkbox-item {
+  display: inline-block;
+  margin-right: 8px;
 }
 
 .image-section {
